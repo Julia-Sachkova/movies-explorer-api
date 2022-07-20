@@ -3,11 +3,13 @@ const express = require('express');
 const { errors, celebrate, Joi } = require('celebrate');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const { login, createUser } = require('./controllers/user');
 const NotFound = require('./errors/NotFound');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const limiter = require('./middlewares/limiter');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -20,6 +22,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
+
+app.use(limiter);
+app.use(helmet());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
