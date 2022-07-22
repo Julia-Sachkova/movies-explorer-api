@@ -4,6 +4,7 @@
   "description": "Дипломный проект на курсе по веб-разработке",
   "main": "app.js",
   "scripts": {
+    "lint": "npx eslint .",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
@@ -19,7 +20,8 @@
   "homepage": "https://github.com/Julia-Rulova/movies-explorer-api#readme",
   "devDependencies": {
     "eslint": "^8.20.0",
-    "eslint-plugin-react": "^7.30.1"
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -27,8 +29,6 @@
     "celebrate": "^15.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
     "express": "^4.18.1",
     "express-rate-limit": "^6.4.0",
     "express-winston": "^4.2.0",

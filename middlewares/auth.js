@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const NotValidJwt = require('../errors/NotValidJwt');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../utils/config');
 
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
@@ -14,7 +15,7 @@ const auth = (req, res, next) => {
     try {
       payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'SECRET_KEY');
     } catch (err) {
-      next(res.send({ message: 'Авторизация не успешна' }));
+      next(new NotValidJwt({ message: 'Авторизация не успешна' }));
     }
 
     req.user = payload;

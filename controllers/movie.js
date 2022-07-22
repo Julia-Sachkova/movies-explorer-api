@@ -22,7 +22,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     thumbnail,
     movieId,
     nameRU,
@@ -37,7 +37,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     thumbnail,
     movieId,
     nameRU,
@@ -57,25 +57,6 @@ module.exports.createMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
 
-  const movieDelete = () => {
-    Movie.findById(movieId)
-      .orFail(new NotFound('Фильм не найден!'))
-      .then((movie) => {
-        if (movie.owner.toString() !== req.user._id) {
-          return next(new NoAccess('Нельзя удалить чужой фильм'));
-        }
-        return movie.remove()
-          .then(() => res.send({ message: 'Фильм удален' }));
-      })
-      .catch((err) => {
-        if (err.name === 'CastError') {
-          next(new NotValidCode('Введен некорректный id'));
-        } else {
-          next(err);
-        }
-      });
-  };
-
   Movie.findById(movieId)
     .orFail(new NotFound('Фильм не найден.'))
     .then((movie) => {
@@ -83,7 +64,8 @@ module.exports.deleteMovie = (req, res, next) => {
         throw new NoAccess('Вы не можете удалить данный фильм');
       }
 
-      return movieDelete();
+      return movie.remove()
+        .then(() => res.send({ messge: 'Фильм  удален' }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {

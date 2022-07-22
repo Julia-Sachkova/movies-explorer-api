@@ -2,12 +2,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const { NODE_ENV, JWT_SECRET = 'dfYSD54hvdhDSH7db5dsbDjg' } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../utils/config');
 
 const AlreadyExistData = require('../errors/AlreadyExistData');
 const NotFound = require('../errors/NotFound');
 const NotValidCode = require('../errors/NotValidCode');
-const NoAccess = require('../errors/NoAccess');
+const NotValidJwt = require('../errors/NotValidJwt');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -22,7 +22,7 @@ module.exports.login = (req, res, next) => {
       return res.send({ token });
     })
     .catch(() => {
-      next(new NoAccess('Ошибка доступа'));
+      next(new NotValidJwt('Неверный логин или пароль'));
     });
 };
 
@@ -44,6 +44,8 @@ module.exports.updateUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new NotValidCode('Введены некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new AlreadyExistData('Нельзя изменить данные другого пользователя'));
       } else {
         next(err);
       }
